@@ -90,6 +90,10 @@
 
 session_start();
 
+if($_SESSION['userId']) {
+    header("Location: index.php");
+}
+
 if (isset($_SESSION['error'])) {
     $error = $_SESSION['error'];
     unset($_SESSION['error']);
@@ -144,24 +148,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if ($result && $result->num_rows > 0) {
-            $user_data = $result->fetch_assoc();
-            $hashed_password = $user_data['password'];
-
-            if (password_verify($password, $hashed_password)) {
-                header("Location: index.php");
-                exit;
-            } else {
-                $_SESSION['error'] = "Username atau password salah";
-                header("Location: login.php");
-                exit;
-            }
-        } else {
+        if($result && $result->num_rows === 0) {
             $_SESSION['error'] = "Username tidak ditemukan";
             header("Location: login.php");
             exit;
         }
-        
+
+        $user_data = $result->fetch_assoc();
+        $hashed_password = $user_data['password'];
+
+        if(!password_verify($password, $hashed_password)) {
+            $_SESSION['error'] = "Username atau password salah";
+            header("Location: login.php");
+            exit;
+        }
+
+        $_SESSION['userId'] = $user_data['id_admin'];
+        header("Location: index.php");
+        exit;
+
         $stmt->close();
     } catch (Exception $e) {
         $error = "Terjadi kesalahan: " . $e->getMessage();

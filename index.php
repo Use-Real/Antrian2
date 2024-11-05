@@ -1,8 +1,19 @@
 <!doctype html>
 <html lang="en" class="h-100">
 
+
+
 <?php
 session_start();
+require 'config/database.php';
+
+// Periksa apakah pengguna sudah login atau belum
+if (!isset($_SESSION['userId'])) {
+    // Jika belum login, arahkan ke halaman login
+    header("Location: login.php");
+    exit();
+}
+
 ?>
 
 <head>
@@ -75,6 +86,22 @@ session_start();
         </div>
       </div>
     </div>
+    <div class="row gx-5 justify-content-center">
+        <!-- link halaman nomor antrian -->
+        <div class="col-lg-6 mb-4">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-5">
+              <div class="feature-icon-1 bg-success bg-gradient mb-4">
+                <i class="bi-tv"></i>
+              </div>
+              <h3>Tampilan Nomor Antrian</h3>
+              <p class="mb-4">Halaman Tampilan Nomor Antrian digunakan pengunjung untuk melihat nomor antrian.</p>
+              <a href="tampilan-antrian" class="btn btn-success rounded-pill px-4 py-2">
+                Tampilkan <i class="bi-chevron-right ms-2"></i>
+              </a>
+            </div>
+          </div>
+        </div>
   </main>
 
   <!-- Footer -->
